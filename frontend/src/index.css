@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --color-brand-green: #7a8b5c;
+  --color-brand-green-dark: #5e7550;
+  --color-brand-teal: #2596be;
+  --color-brand-cyan: #00b4d8;
+  --color-brand-cyan-hover: #0097b2;
+  --color-card-bg: #f8fafc;
+  --color-card-border: #e2e8f0;
+  --color-primary: #7a8b5c;
+  --color-primary-dark: #5e7550;
+  --color-muted: #64748b;
+  --color-border: #e2e8f0;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    direction: rtl;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: #ffffff;
+    color: #1e293b;
+    direction: rtl;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+}
+
+/* Scrollbar: overlay, only thumb visible, no track */
+html {
+  overflow-y: overlay !important;
+}
+
+::-webkit-scrollbar {
+  width: 10px !important;
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #7a8b5c !important;
+  border-radius: 10px !important;
+  border: 3px solid transparent !important;
+  background-clip: content-box !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5e7550 !important;
+  background-clip: content-box !important;
+}
+
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
