@@ -16,8 +16,13 @@ export function GalleryCarousel({ projects }: CarouselProps) {
   const [page, setPage] = useState(0)
   const totalPages = Math.ceil(projects.length / VISIBLE)
 
-  const next = useCallback(() => setPage((p) => (p + 1) % totalPages), [totalPages])
-  const prev = () => setPage((p) => (p - 1 + totalPages) % totalPages)
+  useEffect(() => setPage(0), [projects])
+
+  const next = useCallback(
+    () => setPage((p) => (totalPages > 0 ? (p + 1) % totalPages : 0)),
+    [totalPages],
+  )
+  const prev = () => setPage((p) => (totalPages > 0 ? (p - 1 + totalPages) % totalPages : 0))
 
   useEffect(() => {
     const id = setInterval(next, INTERVAL)
