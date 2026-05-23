@@ -21,14 +21,15 @@ export async function submitProject(dto: CreateProjectDto): Promise<IProject> {
     ],
   });
 
-  // Send confirmation email
-  const municipality = await municipalityDal.findMunicipalityById(dto.municipality);
-  await emailService.sendTemplateEmail(dto.email, EmailTemplateKey.REQUEST_RECEIVED, {
-    fullName: dto.fullName,
-    businessName: dto.businessName,
-    needType: NEED_TYPE_LABELS[dto.needType],
-    municipalityName: municipality?.name || '',
-  });
+  // Send confirmation email (fire-and-forget, don't block response)
+  municipalityDal.findMunicipalityById(dto.municipality).then((municipality) => {
+    emailService.sendTemplateEmail(dto.email, EmailTemplateKey.REQUEST_RECEIVED, {
+      fullName: dto.fullName,
+      businessName: dto.businessName,
+      needType: NEED_TYPE_LABELS[dto.needType],
+      municipalityName: municipality?.name || '',
+    }).catch(() => {});
+  }).catch(() => {});
 
   return project;
 }

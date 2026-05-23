@@ -16,6 +16,9 @@ function getTransporter(): nodemailer.Transporter {
         user: env.SMTP_USER,
         pass: env.SMTP_PASS,
       },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 10000,
     });
   }
   return transporter;
@@ -52,5 +55,19 @@ export async function sendTemplateEmail(
     });
   } catch (error) {
     console.error(`Failed to send email to ${to}:`, error);
+  }
+}
+
+export async function verifyConnection(): Promise<void> {
+  if (!env.SMTP_HOST || !env.SMTP_USER) {
+    console.log('📧 SMTP not configured, skipping verification');
+    return;
+  }
+  try {
+    const transport = getTransporter();
+    await transport.verify();
+    console.log('✅ SMTP connection verified successfully');
+  } catch (error) {
+    console.error('❌ SMTP verification failed:', error);
   }
 }
