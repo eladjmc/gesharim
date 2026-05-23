@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Outlet, Navigate } from 'react-router-dom'
 import { useAuthStore } from '../../store'
 import { AdminSidebar } from './AdminSidebar'
-import { Menu, X } from 'lucide-react'
+import { Menu } from 'lucide-react'
 
 export function AdminLayout() {
   const { isAuthenticated } = useAuthStore()
