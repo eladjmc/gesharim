@@ -10,7 +10,7 @@ interface ContactFormModalProps {
 
 export function ContactFormModal({ isOpen, onClose }: ContactFormModalProps) {
   const { municipalities, loading, error, success, submit, setSuccess } =
-    useContactForm(onClose)
+    useContactForm()
 
   const handleClose = () => {
     setSuccess(false)

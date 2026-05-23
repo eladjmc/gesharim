@@ -1,17 +1,7 @@
-import { Resend } from 'resend';
 import { env } from '../config';
 import * as emailTemplateDal from '../dal/emailTemplate.dal';
 import { renderTemplate } from '../utils/template.util';
 import type { EmailTemplateKey } from '../types/enums';
-
-let resend: Resend | null = null;
-
-function getClient(): Resend {
-  if (!resend) {
-    resend = new Resend(env.RESEND_API_KEY);
-  }
-  return resend;
-}
 
 export async function sendTemplateEmail(
   to: string,
@@ -27,7 +17,7 @@ export async function sendTemplateEmail(
   const subject = renderTemplate(template.subject, variables);
   const body = renderTemplate(template.body, variables);
 
-  if (!env.RESEND_API_KEY) {
+  if (!env.BREVO_API_KEY) {
     console.log(`📧 [DEV] Email to: ${to}`);
     console.log(`   Subject: ${subject}`);
     console.log(`   Body: ${body.substring(0, 100)}...`);
@@ -35,23 +25,46 @@ export async function sendTemplateEmail(
   }
 
   try {
-    const client = getClient();
-    await client.emails.send({
-      from: `${env.SENDER_NAME} <${env.SENDER_EMAIL}>`,
-      to,
-      subject,
-      text: body,
+    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'content-type': 'application/json',
+        'api-key': env.BREVO_API_KEY,
+      },
+      body: JSON.stringify({
+        sender: { name: env.SENDER_NAME, email: env.SENDER_EMAIL },
+        to: [{ email: to }],
+        subject,
+        textContent: body,
+      }),
     });
-    console.log(`✅ Email sent to ${to}`);
+    if (!res.ok) {
+      const err = await res.text();
+      console.error(`Failed to send email to ${to}: ${err}`);
+    } else {
+      console.log(`✅ Email sent to ${to}`);
+    }
   } catch (error) {
     console.error(`Failed to send email to ${to}:`, error);
   }
 }
 
 export async function verifyConnection(): Promise<void> {
-  if (!env.RESEND_API_KEY) {
-    console.log('📧 Resend API key not configured, skipping verification');
+  if (!env.BREVO_API_KEY) {
+    console.log('📧 Brevo API key not configured, skipping verification');
     return;
   }
-  console.log('✅ Resend API key configured');
+  try {
+    const res = await fetch('https://api.brevo.com/v3/account', {
+      headers: { 'api-key': env.BREVO_API_KEY },
+    });
+    if (res.ok) {
+      console.log('✅ Brevo API key verified successfully');
+    } else {
+      console.error('❌ Brevo API key verification failed:', await res.text());
+    }
+  } catch (error) {
+    console.error('❌ Brevo connection failed:', error);
+  }
 }

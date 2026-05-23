@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { api } from '../services/api'
 import type { Municipality } from '../types'
 
-export function useContactForm(onSuccess: () => void) {
+export function useContactForm() {
   const [municipalities, setMunicipalities] = useState<Municipality[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -18,7 +18,6 @@ export function useContactForm(onSuccess: () => void) {
     try {
       await api.post('/projects', data)
       setSuccess(true)
-      onSuccess()
     } catch (err) {
       setError((err as Error).message)
     } finally {
