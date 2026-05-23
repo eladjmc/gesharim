@@ -8,11 +8,15 @@ const navItems = [
   { path: '/admin/email-templates', label: 'תבניות מייל' },
 ]
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+  onNavigate?: () => void
+}
+
+export function AdminSidebar({ onNavigate }: AdminSidebarProps) {
   const { logout } = useAuthStore()
 
   return (
-    <aside className="w-64 bg-slate-900 text-white flex flex-col">
+    <aside className="w-64 h-full bg-slate-900 text-white flex flex-col">
       <div className="p-6 border-b border-slate-700">
         <h1 className="text-lg font-bold">
           <span className="text-brand-green">גשרים</span>{' '}
@@ -25,6 +29,7 @@ export function AdminSidebar() {
           <NavLink
             key={item.path}
             to={item.path}
+            onClick={onNavigate}
             className={({ isActive }) =>
               `block px-4 py-2.5 rounded-xl text-sm transition-all ${
                 isActive

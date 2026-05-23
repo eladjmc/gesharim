@@ -1,6 +1,10 @@
 import { z } from 'zod';
 import { NeedType, ProjectStatus } from './enums';
 
+const phoneSchema = z.string()
+  .transform(v => v.replace(/[-\s]/g, ''))
+  .pipe(z.string().regex(/^0[2-9]\d{7,8}$/, 'Invalid Israeli phone number'));
+
 export const loginSchema = z.object({
   email: z.string().email().toLowerCase().trim(),
   password: z.string().min(6),
@@ -8,7 +12,7 @@ export const loginSchema = z.object({
 
 export const createProjectSchema = z.object({
   fullName: z.string().min(2).max(100).trim(),
-  phone: z.string().regex(/^0[2-9]\d{7,8}$/, 'Invalid Israeli phone number'),
+  phone: phoneSchema,
   email: z.string().email().toLowerCase().trim(),
   businessName: z.string().min(2).max(100).trim(),
   municipality: z.string().length(24, 'Invalid municipality ID'),
@@ -32,7 +36,7 @@ export const changeStatusSchema = z.object({
 export const createManhadSchema = z.object({
   name: z.string().min(2).max(100).trim(),
   email: z.string().email().toLowerCase().trim(),
-  phone: z.string().regex(/^0[2-9]\d{7,8}$/, 'Invalid Israeli phone number'),
+  phone: phoneSchema,
   municipalities: z.array(z.string().length(24)).min(1),
 });
 
